@@ -117,6 +117,52 @@ def _get_openai_chat_completion_service() -> OpenAIChatClient:
 
 # endregion
 
+# region Get Products
+
+@tool(
+    name='get_products',
+    description='Retrieves a set of products based on a natural language user query.'
+)
+def get_products(
+    question: Annotated[
+        str, 'Natural language query to retrieve products, e.g. "What kinds of paint rollers do you have in stock?"'
+    ],
+) -> list[dict[str, Any]]:
+    try:
+        # Simulate product retrieval based on the question
+        # In a real implementation, this would query a database or external service
+        product_dict = [
+            {
+                "id": "1",
+                "name": "Eco-Friendly Paint Roller",
+                "type": "Paint Roller",
+                "description": "A high-quality, eco-friendly paint roller for smooth finishes.",
+                "punchLine": "Roll with the best, paint with the rest!",
+                "price": 15.99
+            },
+            {
+                "id": "2",
+                "name": "Premium Paint Brush Set",
+                "type": "Paint Brush",
+                "description": "A set of premium paint brushes for detailed work and fine finishes.",
+                "punchLine": "Brush up your skills with our premium set!",
+                "price": 25.49
+            },
+            {
+                "id": "3",
+                "name": "All-Purpose Paint Tray",
+                "type": "Paint Tray",
+                "description": "A durable paint tray suitable for all types of rollers and brushes.",
+                "punchLine": "Tray it, paint it, love it!",
+                "price": 9.99
+            }
+        ]
+        return product_dict
+    except Exception as e:
+        return f'Product recommendation failed: {e!s}'
+
+# endregion
+
 # region Response Format
 
 class ResponseFormat(BaseModel):
@@ -162,6 +208,25 @@ class AgentFrameworkProductManagementAgent:
             ),
         )
 
+        # Define a ProductAgent to retrieve products from the Zava catalog
+        product_agent = Agent(
+            client=chat_service,
+            name='ProductAgent',
+            instructions=("""
+                You specialize in handling product-related requests from customers and employees.
+                This includes providing a list of products, identifying available quantities,
+                providing product prices, and giving product descriptions as they exist in the product catalog.
+                Your goal is to assist customers promptly and accurately with all product-related inquiries.
+                You are a helpful assistant that MUST use the get_products tool to answer all the questions from user.
+                You MUST NEVER answer from your own knowledge UNDER ANY CIRCUMSTANCES.
+                You MUST only use products from the get_products tool to answer product-related questions.
+                Do not ask the user for more information about the products; instead use the get_products tool to find the
+                relevant products and provide the information based on that.
+                Do not make up any product information. Use only the product information from the get_products tool.
+                """
+            ),
+            tools=get_products,
+        )
 
         # Define the main ProductManagerAgent to delegate tasks to the appropriate agents
         self.agent = Agent(
@@ -169,18 +234,14 @@ class AgentFrameworkProductManagementAgent:
             name='ProductManagerAgent',
             instructions=(
                 "Your role is to carefully analyze the user's request and respond as best as you can. "
-                'Your primary goal is precise and efficient delegation to ensure customers and employees receive accurate and specialized '
-                'assistance promptly.\n\n'
-                'IMPORTANT: You must ALWAYS respond with a valid JSON object in the following format:\n'
-                '{"status": "<status>", "message": "<your response>"}\n\n'
-                'Where status is one of: "input_required", "completed", or "error".\n'
-                '- Use "input_required" when you need more information from the user.\n'
-                '- Use "completed" when the task is finished.\n'
-                '- Use "error" when something went wrong.\n\n'
-                'Never respond with plain text. Always use the JSON format above.'
+                'Your primary goal is precise and efficient delegation to ensure customers and employees receive accurate and specialized assistance promptly.'
+                'Whenever a user query is related to retrieving product information, you MUST delegate the task to the ProductAgent.'
+                'Use the MarketingAgent for marketing-related queries and the RankerAgent for product ranking and recommendation tasks.'
+                'You may use these agents in conjunction with each other to provide comprehensive responses to user queries.'
             ),
-            tools=[marketing_agent.as_tool(), ranker_agent.as_tool()],
+            tools=[product_agent.as_tool(), marketing_agent.as_tool(), ranker_agent.as_tool()],
         )
+
 
     async def invoke(self, user_input: str, session_id: str) -> dict[str, Any]:
         """Handle synchronous tasks (like tasks/send).
