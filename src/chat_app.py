@@ -49,8 +49,6 @@ from app.tools.aiSearchTools import product_recommendations
 from app.tools.imageCreationTool import create_image
 from app.servers.mcp_inventory_server import mcp as inventory_mcp
 from services.handoff_service import HandoffService
-# from app.servers.mcp_inventory_server import mcp as inventory_mcp
-# from services.handoff_service import HandoffService
 
 
 load_dotenv()
