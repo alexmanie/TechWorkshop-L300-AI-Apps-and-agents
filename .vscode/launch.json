@@ -8,7 +8,7 @@
             "name": "Debug MCP Inventory Tools Server",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/src/venv/Scripts/mcp.exe",
+            "program": "${workspaceFolder}/.venv/Scripts/mcp.exe",
             "args": ["dev", "${workspaceFolder}/src/app/servers/mcp_inventory_server.py"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src/app/servers"
@@ -17,17 +17,16 @@
             "name": "Debug MCP Prompt Server",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/src/venv/Scripts/mcp.exe",
+            "program": "${workspaceFolder}/.venv/Scripts/mcp.exe",
             "args": ["dev", "${workspaceFolder}/src/app/servers/mcp_prompt_server.py"],
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src/app/servers"
         },
-
         {
-            "name": "Python: MCP API",
-            "type": "python",
+            "name": "Python: Chat App",
+            "type": "debugpy",
             "request": "launch",
-            "python": "${workspaceFolder}/src/venv/Scripts/python.exe",
+            "python": "${workspaceFolder}/.venv/Scripts/python.exe",
             "module": "uvicorn",
             "cwd" : "${workspaceFolder}/src",
             
