@@ -43,6 +43,8 @@ from utils.message_utils import (
 from app.tools.understandImage import get_image_description
 from services.agent_service import get_or_create_agent_processor
 
+# Single Agent
+from app.tools.singleAgentExample import generate_response
 
 # Multi Agents
 from app.tools.aiSearchTools import product_recommendations
