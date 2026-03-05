@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: techworkshop-app
+  IMAGE_NAME: chat-app
 
 jobs:
   build-and-push:
