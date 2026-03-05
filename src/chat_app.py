@@ -116,10 +116,11 @@ async def safe_operation(operation, fallback_value=None, operation_name="Unknown
         logger.error(f"Unexpected error in {operation_name}: {e}", exc_info=True)
         return fallback_value
 
-app = FastAPI()
 #set up MCP inventory server as a mounted app
-# inventory_mcp_app = inventory_mcp.sse_app()
-# app.mount("/mcp-inventory/", inventory_mcp_app)
+app = FastAPI()
+inventory_mcp_app = inventory_mcp.sse_app()
+app.mount("/mcp-inventory/", inventory_mcp_app)
+
 project_endpoint = os.environ.get("FOUNDRY_ENDPOINT")
 if not project_endpoint:
     raise ValueError("FOUNDRY_ENDPOINT environment variable is required")
