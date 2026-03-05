@@ -1,17 +1,17 @@
-name: Cart Manager workflow
+name: Shopper Agent workflow
 on:
   push:
     paths:
-      - "src/app/agents/cartManagerAgent_initializer.py"
-      - "src/prompts/CartManagerPrompt.txt"
-      - "src/app/tools/cartManagementLogic.py"
+      - "src/app/agents/shopperAgent_initializer.py"
+      - "src/prompts/ShopperAgentPrompt.txt"
+      - "src/app/tools/aiSearchTools.py"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  run-cart-manager-agent-initializer:
+  run-shopper-agent-initializer:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,7 +38,7 @@ jobs:
         with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Run cart manager agent initializer
+      - name: Run shopper agent initializer
         run: |
           cd src/
-          python app/agents/cartManagerAgent_initializer.py
+          python app/agents/shopperAgent_initializer.py

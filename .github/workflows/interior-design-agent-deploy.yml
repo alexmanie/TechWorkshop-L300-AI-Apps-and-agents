@@ -1,17 +1,18 @@
-name: Cart Manager workflow
+name: Interior Design Agent workflow
 on:
   push:
     paths:
-      - "src/app/agents/cartManagerAgent_initializer.py"
-      - "src/prompts/CartManagerPrompt.txt"
-      - "src/app/tools/cartManagementLogic.py"
+      - "src/app/agents/interiorDesignAgent_initializer.py"
+      - "src/prompts/InteriorDesignAgentPrompt.txt"
+      - "src/app/tools/imageCreationTool.py"
+      - "src/app/tools/aiSearchTools.py"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  run-cart-manager-agent-initializer:
+  run-interior-design-agent-initializer:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,7 +39,7 @@ jobs:
         with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Run cart manager agent initializer
+      - name: Run interior design agent initializer
         run: |
           cd src/
-          python app/agents/cartManagerAgent_initializer.py
+          python app/agents/interiorDesignAgent_initializer.py
